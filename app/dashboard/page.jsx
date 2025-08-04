@@ -1,6 +1,6 @@
 import React from 'react';
 import { List, Star, FileText, Send } from 'lucide-react';
-import Dsidebar from '../components/common/dsidebar';
+// import Dsidebar from '../components/common/dsidebar';
 import Dnavbar from '../components/common/dnavbar';
 
 const reviews = [
@@ -20,10 +20,7 @@ const Dashboard = () => {
     <>
       <Dnavbar />
       <div className="flex flex-col md:flex-row min-h-screen">
-        {/* Sidebar */}
-        <div className="w-full md:w-64">
-          <Dsidebar />
-        </div>
+      
 
         {/* Main Content */}
         <div className="flex-1 p-4 sm:p-6 md:p-8 lg:p-12 text-gray-700">
