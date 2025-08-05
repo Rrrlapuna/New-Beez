@@ -38,7 +38,7 @@ export default function Dnavbar() {
 
   const navLinks = [
     { href: "/dashboard", icon: Home, label: "Dashboard" },
-    { href: "/listings", icon: List, label: "Listings" },
+    { href: "/listing", icon: List, label: "Listings" },
     { href: "/ratings", icon: Star, label: "My Ratings" },
     { href: "/inquiries", icon: MessageCircle, label: "Inquiries" },
     { href: "/account", icon: User, label: "Account" },

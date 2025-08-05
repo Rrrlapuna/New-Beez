@@ -1,44 +1,68 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowDownUp, MoreHorizontal } from "lucide-react";
-import Dsidebar from "../components/common/dsidebar";
+import { Plus, Star, Settings } from "lucide-react";
 import Dnavbar from "../components/common/dnavbar";
 
-const tabs = ["Add Listing", "Pending", "Approved", "Removed"];
-
-const listings = Array.from({ length: 22 }, (_, i) => ({
-  id: i + 1,
-  title: "Heading Title Office Space Title",
-  location: "Ahmedabad, Gujarat, India",
-  date: "19 June, 2019",
-  reviews: 2,
-  rq: 3,
-  status:
-    i % 4 === 0
-      ? "Pending"
-      : i % 4 === 1
-      ? "Approved"
-      : i % 4 === 2
-      ? "Removed"
-      : "Pending",
-  image: "assets/image/mall.png",
-}));
-
-export default function ListingManagement() {
-  const [activeTab, setActiveTab] = useState("All Listing");
-  const [menuIndex, setMenuIndex] = useState(null);
+const ListingManagement = () => {
+  const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [description, setDescription] = useState("");
   const itemsPerPage = 4;
 
+  // Sample data
+  const listings = [
+    {
+      id: 1,
+      title: "Rout Automobiles",
+      location: "Chandikhol",
+      date: "10 November 2024",
+      reviews: 1,
+      rating: 5,
+      status: "approved",
+      image: "https://via.placeholder.com/100",
+    },
+    {
+      id: 2,
+      title: "Rout Motors",
+      location: "Bhubaneswar",
+      date: "15 November 2024",
+      reviews: 0,
+      rating: 4,
+      status: "pending",
+      image: "https://via.placeholder.com/100",
+    },
+    {
+      id: 3,
+      title: "Rout Auto Care",
+      location: "Cuttack",
+      date: "20 November 2024",
+      reviews: 3,
+      rating: 5,
+      status: "approved",
+      image: "https://via.placeholder.com/100",
+    },
+    {
+      id: 4,
+      title: "Rout Spare Parts",
+      location: "Puri",
+      date: "25 November 2024",
+      reviews: 0,
+      rating: 0,
+      status: "deleted",
+      image: "https://via.placeholder.com/100",
+    },
+  ];
+
+  // Filter listings based on active tab
   const filteredListings =
-    activeTab === "All Listing" || activeTab === "Add Listing"
+    activeTab === "all"
       ? listings
       : listings.filter((listing) => listing.status === activeTab);
 
+  // Pagination
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
-
   const currentListings = filteredListings.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -47,193 +71,205 @@ export default function ListingManagement() {
   const handleNextPage = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const toggleMenu = (idx) => setMenuIndex(menuIndex === idx ? null : idx);
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const goToPage = (page) => setCurrentPage(page);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest(".menu-btn")) setMenuIndex(null);
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  // Word counter for description
+  const wordCount =
+    description.trim() === "" ? 0 : description.trim().split(/\s+/).length;
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
       <Dnavbar />
-      <div className="flex flex-col md:flex-row min-h-screen">
-        {/* Sidebar */}
-        <div className="w-full md:w-64">
-          <Dsidebar />
+
+      <main className="pt-16 md:pt-20 pb-16 px-4 md:px-6">
+        {/* Header Section */}
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-semibold text-[#004274]">
+                Listing Management
+              </h1>
+              <p className="text-gray-500 text-sm">
+                Manage your business listings in one single dashboard
+              </p>
+            </div>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-[#004274] text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-[#00315a] transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add New Listing</span>
+            </button>
+          </div>
         </div>
 
-        {/* Mobile overlay */}
-        {sidebarOpen && (
-          <div
-            className="fixed inset-0 z-40 bg-black bg-opacity-30 md:hidden"
-            onClick={toggleSidebar}
-          />
-        )}
+        {/* Tabs */}
+        <div className="flex overflow-x-auto mb-6 pb-2 gap-1">
+          {[
+            { id: "all", label: "All" },
+            { id: "approved", label: "Approved" },
+            { id: "pending", label: "Pending" },
+            { id: "deleted", label: "Deleted" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setActiveTab(tab.id);
+                setCurrentPage(1);
+              }}
+              className={`px-4 py-2 rounded-lg whitespace-nowrap text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? "bg-[#004274] text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-        {/* Main Content */}
-        <main className="flex-1 w-full p-4 md:p-8 overflow-hidden">
-          {/* Heading and Button - Flex Row for Desktop */}
-          <div className="mb-6">
-            <div className="md:flex md:items-center md:justify-between">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-medium text-[#004274]">
-                  Listing Management
-                </h2>
-                <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-0">
-                  Manage your office space listings in one dashboard.
-                </p>
-              </div>
+        {/* Desktop Table  */}
+        <div className="hidden lg:block bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Image
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Title
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Listing Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Reviews
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {currentListings.map((listing) => (
+                  <tr
+                    key={listing.id}
+                    className="hover:bg-[#eff6ff] transition-colors"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <img
+                        src={listing.image}
+                        alt={listing.title}
+                        className="w-16 h-16 rounded object-cover"
+                      />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-medium">{listing.title}</div>
+                      <div className="text-gray-500 text-sm">
+                        {listing.location}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {listing.date}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`w-4 h-4 ${
+                              star <= listing.rating
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <div className="text-gray-500 text-xs mt-1">
+                        {listing.reviews}{" "}
+                        {listing.reviews === 1 ? "review" : "reviews"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          listing.status === "approved"
+                            ? "bg-green-100 text-green-800"
+                            : listing.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {listing.status.charAt(0).toUpperCase() +
+                          listing.status.slice(1)}
+                      </span>
+                    </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+  <Link
+    href={`/listings/manage/${listing.id}`}
+    className="flex flex-col items-center text-xs text-[#004274] hover:text-[#00315a] transform -translate-x-7"
+  >
+    <Settings className="w-4 h-4 mb-1" />
+    <span>Manage</span>
+  </Link>
+</td>
 
-              {/* Desktop Add Button */}
-              <div className="hidden md:block">
-                <Link
-                  href="/list"
-                  className="bg-pink-500 hover:bg-pink-600 text-white font-semibold px-5 py-2 rounded-md text-sm whitespace-nowrap"
-                >
-                  Add new listing
-                </Link>
-              </div>
-            </div>
-
-            {/* Mobile Add Button */}
-            <div className="md:hidden mt-2 w-full">
-              <Link
-                href="/list"
-                className="block w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold px-5 py-2 rounded-md text-center text-sm"
-              >
-                Add new listing
-              </Link>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-md shadow-md p-4">
-            {/* Tabs */}
-            <div className="flex w-full justify-between mb-4 border-b pb-2 text-sm">
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => {
-                    setActiveTab(tab);
-                    setCurrentPage(1);
-                  }}
-                  className={`flex-1 text-center px-1 py-2 text-[13px] md:text-sm truncate ${
-                    activeTab === tab
-                      ? "border-b-2 border-[#004274] text-[#004274]"
-                      : "text-gray-600 hover:text-[#004274]"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-
-            {/* Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead>
-                  <tr className="text-gray-600 whitespace-nowrap">
-                    {[
-                      "Image",
-                      "Title",
-                      "Date",
-                      "Reviews",
-                      "ID",
-                      "Status",
-                      "Action",
-                    ].map((col) => (
-                      <th key={col} className="py-2 font-medium px-2">
-                        <div className="flex items-center gap-2">
-                          {col}
-                          {col !== "Action" && (
-                            <ArrowDownUp size={18} className="text-gray-400" />
-                          )}
-                        </div>
-                      </th>
-                    ))}
                   </tr>
-                </thead>
-                <tbody>
-                  {currentListings.map((listing, idx) => (
-                    <tr key={listing.id} className="border-b text-left">
-                      <td className="py-2 px-2">
-                        <img
-                          src={listing.image}
-                          alt="Listing"
-                          className="w-20 h-16 rounded-md object-cover"
-                        />
-                      </td>
-                      <td className="py-2 px-2">
-                        {listing.title}
-                        <br />
-                        <span className="text-gray-500 text-xs">
-                          {listing.location}
-                        </span>
-                      </td>
-                      <td className="py-2 px-2">{listing.date}</td>
-                      <td className="py-2 px-2">{listing.reviews}</td>
-                      <td className="py-2 px-2">{listing.rq}</td>
-                      <td className="py-2 px-2">
-                        <span
-                          className={`px-3 py-1 text-xs font-medium rounded-md text-white ${
-                            listing.status === "Approved"
-                              ? "bg-green-500"
-                              : listing.status === "Removed"
-                              ? "bg-red-500"
-                              : "bg-yellow-500"
-                          }`}
-                        >
-                          {listing.status}
-                        </span>
-                      </td>
-                      <td className="relative py-2 px-2">
-                        <button
-                          onClick={() => toggleMenu(idx)}
-                          className="menu-btn"
-                        >
-                          <MoreHorizontal size={18} />
-                        </button>
-                        {menuIndex === idx && (
-                          <div className="absolute right-0 mt-1 w-28 bg-white shadow-md rounded-md z-10 text-left">
-                            <button className="w-full px-4 py-2 hover:bg-gray-100">
-                              Edit
-                            </button>
-                            <button className="w-full px-4 py-2 hover:bg-gray-100">
-                              Delete
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-gray-200 rounded-md"
-              >
-                Previous
-              </button>
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-gray-200 rounded-md"
-              >
-                Next
-              </button>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </main>
-      </div>
-    </>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-between items-center mt-6">
+          <button
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              currentPage === 1
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-white text-[#004274] hover:bg-gray-100"
+            }`}
+          >
+            Previous
+          </button>
+
+          <div className="flex gap-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => goToPage(page)}
+                className={`w-10 h-10 rounded-lg text-sm font-medium ${
+                  currentPage === page
+                    ? "bg-[#004274] text-white"
+                    : "bg-white text-[#004274] hover:bg-gray-100"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages || totalPages === 0}
+            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              currentPage === totalPages || totalPages === 0
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-white text-[#004274] hover:bg-gray-100"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      </main>
+    </div>
   );
-}
+};
+
+export default ListingManagement;
