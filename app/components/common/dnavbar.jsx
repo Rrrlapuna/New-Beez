@@ -18,8 +18,8 @@ import {
 export default function Dnavbar() {
   const pathname = usePathname();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [mobileProfileDropdownOpen, setMobileProfileDropdownOpen] =
-    useState(false);
+  const [mobileProfileDropdownOpen, setMobileProfileDropdownOpen] = useState(false);
+  const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -30,6 +30,9 @@ export default function Dnavbar() {
       if (!event.target.closest(".beez-mobile-profile-btn")) {
         setMobileProfileDropdownOpen(false);
       }
+      if (!event.target.closest(".beez-notification-dropdown")) {
+        setNotificationDropdownOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -39,9 +42,15 @@ export default function Dnavbar() {
   const navLinks = [
     { href: "/dashboard", icon: Home, label: "Dashboard" },
     { href: "/listing", icon: List, label: "Listings" },
-    { href: "/ratings", icon: Star, label: "My Ratings" },
+    { href: "/ratings", icon: Star, label: "Ratings" },
     { href: "/inquiries", icon: MessageCircle, label: "Inquiries" },
     { href: "/account", icon: User, label: "Account" },
+  ];
+
+  const notifications = [
+    { id: 1, text: "New inquiry for your property", time: "10 min ago" },
+    { id: 2, text: "Your listing was approved", time: "1 hour ago" },
+    { id: 3, text: "New message from a guest", time: "2 days ago" },
   ];
 
   return (
@@ -58,32 +67,60 @@ export default function Dnavbar() {
           </div>
         </div>
 
-        <nav className="beez-nav flex items-center gap-2">
+        <nav className="beez-nav flex items-center gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`beez-nav-link flex items-center px-3 py-2 rounded text-gray-800 text-sm transition-colors ${
+              className={`beez-nav-link flex items-center px-4 py-2 rounded-lg text-sm transition-colors ${
                 pathname === link.href
-                  ? "text-[#004274] font-medium"
-                  : "hover:bg-[#eff6ff] hover:text-[#004274]"
+                  ? "text-[#004274] bg-[#eff6ff] font-medium"
+                  : "text-gray-600 hover:bg-[#eff6ff] hover:text-[#004274]"
               }`}
             >
-              <link.icon className="w-4 h-4 mr-2" />
+              <link.icon className="w-5 h-5 mr-2" />
               <span>{link.label}</span>
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-3">
-          {/* Notification */}
-          <div className="relative">
-            <button className="beez-btn border-0 bg-transparent p-1 text-gray-600 hover:text-[#004274]">
+          {/* Notification Dropdown */}
+          <div className="beez-notification-dropdown relative">
+            <button
+              className="beez-btn border-0 bg-transparent p-1 text-gray-600 hover:text-[#004274] relative"
+              onClick={() => setNotificationDropdownOpen(!notificationDropdownOpen)}
+            >
               <Bell className="w-5 h-5" />
+              <span className="beez-notification-badge absolute -top-1 -right-1 bg-[#ef4444] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold">
+                3
+              </span>
             </button>
-            <span className="beez-notification-badge absolute -top-1 -right-1 bg-[#ef4444] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold">
-              3
-            </span>
+
+            {notificationDropdownOpen && (
+              <div className="beez-dropdown-menu absolute right-0 top-full mt-1 bg-white rounded-md shadow-lg py-1 z-50 min-w-[280px] max-h-[400px] overflow-y-auto">
+                <div className="px-4 py-2 border-b border-gray-100">
+                  <h3 className="text-sm font-medium text-gray-900">Notifications</h3>
+                </div>
+                {notifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className="beez-notification-item px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                  >
+                    <p className="text-sm text-gray-800">{notification.text}</p>
+                    <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                  </div>
+                ))}
+                <div className="px-4 py-2 border-t border-gray-100 text-center">
+                  <Link
+                    href="/notifications"
+                    className="text-sm text-[#004274] hover:underline"
+                  >
+                    View all notifications
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Profile Dropdown */}
@@ -131,31 +168,52 @@ export default function Dnavbar() {
 
       {/* Mobile Header */}
       <header className="beez-mobile-header lg:hidden fixed top-0 left-0 w-full bg-white shadow-sm z-50 py-2 px-4 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="beez-mobile-header-logo">
-            <img
-              src="https://beezinfo.com/img/beez-main-logo.svg"
-              alt="BeezInfo"
-              className="h-7"
-            />
-          </div>
+        <div className="flex items-center gap-2">
           <Link
             href="https://beezinfo.com"
-            className="beez-mobile-back-btn flex items-center gap-1 bg-[#004274] text-white px-3 py-1 rounded-full text-xs"
+            className="beez-mobile-back-btn flex items-center gap-1 text-[#004274] px-2 py-1 rounded-full text-sm"
           >
-            <ArrowLeft className="w-3 h-3" />
+            <ArrowLeft className="w-5 h-5" />
             <span>Back to BeezInfo</span>
           </Link>
         </div>
 
         <div className="beez-mobile-header-actions flex items-center gap-3">
-          <div className="relative">
-            <button className="beez-btn border-0 bg-transparent p-1 text-gray-600 hover:text-[#004274]">
+          <div className="beez-notification-dropdown relative">
+            <button
+              className="beez-btn border-0 bg-transparent p-1 text-gray-600 hover:text-[#004274] relative"
+              onClick={() => setNotificationDropdownOpen(!notificationDropdownOpen)}
+            >
               <Bell className="w-5 h-5" />
+              <span className="beez-notification-badge absolute -top-1 -right-1 bg-[#ef4444] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold">
+                3
+              </span>
             </button>
-            <span className="beez-notification-badge absolute -top-1 -right-1 bg-[#ef4444] text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold">
-              3
-            </span>
+
+            {notificationDropdownOpen && (
+              <div className="beez-dropdown-menu fixed top-16 right-4 left-4 bg-white rounded-md shadow-lg py-1 z-50 max-h-[400px] overflow-y-auto">
+                <div className="px-4 py-2 border-b border-gray-100">
+                  <h3 className="text-sm font-medium text-gray-900">Notifications</h3>
+                </div>
+                {notifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className="beez-notification-item px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                  >
+                    <p className="text-sm text-gray-800">{notification.text}</p>
+                    <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                  </div>
+                ))}
+                <div className="px-4 py-2 border-t border-gray-100 text-center">
+                  <Link
+                    href="/notifications"
+                    className="text-sm text-[#004274] hover:underline"
+                  >
+                    View all notifications
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
 
           <button
@@ -203,17 +261,19 @@ export default function Dnavbar() {
       </Link>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="beez-mobile-nav lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-50 py-2">
+      <nav className="beez-mobile-nav lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-50 py-2 border-t border-gray-100">
         <div className="beez-mobile-nav-links flex justify-around items-center">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`beez-mobile-nav-link flex flex-col items-center px-2 py-1 text-xs ${
-                pathname === link.href ? "text-[#004274]" : "text-gray-500"
+              className={`beez-mobile-nav-link flex flex-col items-center px-3 py-2 rounded-lg text-xs ${
+                pathname === link.href
+                  ? "text-[#004274] bg-[#eff6ff] font-medium"
+                  : "text-gray-500 hover:bg-[#eff6ff]"
               }`}
             >
-              <link.icon className="w-5 h-5 mb-1" />
+              <link.icon className="w-6 h-6 mb-1" />
               <span>{link.label}</span>
             </Link>
           ))}

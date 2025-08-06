@@ -27,7 +27,7 @@ const Dashboard = () => {
             <h2 className="text-lg font-semibold text-[#004274]">
               Good Morning, Rashmi!
             </h2>
-            <p className="text-gray-500 text-sm mb-4">
+            <p className="text-gray-500 text-[14px] mb-4">
               14 New Companies Subscribed Today
             </p>
             <div className="flex space-x-3">
@@ -46,7 +46,8 @@ const Dashboard = () => {
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <Briefcase className="w-5 h-5 text-[#004274] mb-2" />
               <p className="text-xl font-semibold text-[#004274]">987</p>
-              <p className="text-xs text-gray-500 mb-2">Total Companies</p>
+              <p className="text-[14px] text-gray-500 mb-2">Total Companies</p>
+
               <a
                 href="#"
                 className="text-xs text-[#004274] font-medium flex items-center hover:underline"
@@ -59,7 +60,7 @@ const Dashboard = () => {
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <Users className="w-5 h-5 text-[#004274] mb-2" />
               <p className="text-xl font-semibold text-[#004274]">154</p>
-              <p className="text-xs text-gray-500 mb-2">Active Companies</p>
+              <p className="text-[14px] text-gray-500 mb-2">Active Companies</p>
               <a
                 href="#"
                 className="text-xs text-[#004274] font-medium flex items-center hover:underline"
@@ -72,7 +73,9 @@ const Dashboard = () => {
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <X className="w-5 h-5 text-[#004274] mb-2" />
               <p className="text-xl font-semibold text-[#004274]">2</p>
-              <p className="text-xs text-gray-500 mb-2">Inactive Companies</p>
+              <p className="text-[14px] text-gray-500 mb-2">
+                Inactive Companies
+              </p>
               <a
                 href="#"
                 className="text-xs text-[#004274] font-medium flex items-center hover:underline"
@@ -85,7 +88,7 @@ const Dashboard = () => {
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <CreditCard className="w-5 h-5 text-[#004274] mb-2" />
               <p className="text-xl font-semibold text-[#004274]">6</p>
-              <p className="text-xs text-gray-500 mb-2">Active Plans</p>
+              <p className="text-[14px] text-gray-500 mb-2">Active Plans</p>
               <a
                 href="#"
                 className="text-xs text-[#004274] font-medium flex items-center hover:underline"
