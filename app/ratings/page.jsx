@@ -6,8 +6,8 @@ import Dnavbar from "../components/common/dnavbar";
 export default function MyRatings() {
   const [showResponseForm, setShowResponseForm] = useState(null);
   const [responses, setResponses] = useState({
-    1: "Thank you for your kind words! We're delighted to hear about your positive experience.",
-    2: null, // Initialize second rating with no response
+    1: null,
+    2: null,
   });
   const [responseTexts, setResponseTexts] = useState({});
 
@@ -23,7 +23,7 @@ export default function MyRatings() {
     if (responseTexts[id]?.trim()) {
       setResponses({ ...responses, [id]: responseTexts[id] });
       setShowResponseForm(null);
-      setResponseTexts({ ...responseTexts, [id]: "" }); // Clear the textarea
+      setResponseTexts({ ...responseTexts, [id]: "" });
     }
   };
 
@@ -62,9 +62,9 @@ export default function MyRatings() {
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
+        {/* Stats Cards - Full width on mobile, content-width on desktop */}
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-4 mb-6">
+          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm sm:w-fit w-full">
             <div className="flex items-center gap-3">
               <div className="bg-[#eff6ff] p-3 rounded-full">
                 <Star className="w-5 h-5 text-[#004274]" fill="#004274" />
@@ -76,7 +76,7 @@ export default function MyRatings() {
             </div>
           </div>
           
-          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm">
+          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm sm:w-fit w-full">
             <div className="flex items-center gap-3">
               <div className="bg-[#eff6ff] p-3 rounded-full">
                 <Star className="w-5 h-5 text-[#004274]" fill="#004274" />
