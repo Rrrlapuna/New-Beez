@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Star, ChevronLeft, ChevronRight, MessageSquare } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, MessageSquare, Edit } from "lucide-react";
 import Dnavbar from "../components/common/dnavbar";
 
 export default function MyRatings() {
@@ -10,9 +10,11 @@ export default function MyRatings() {
     2: null,
   });
   const [responseTexts, setResponseTexts] = useState({});
+  const [editingResponse, setEditingResponse] = useState(null);
 
   const toggleResponse = (id) => {
     setShowResponseForm(showResponseForm === id ? null : id);
+    setEditingResponse(null);
   };
 
   const handleResponseChange = (id, text) => {
@@ -23,8 +25,15 @@ export default function MyRatings() {
     if (responseTexts[id]?.trim()) {
       setResponses({ ...responses, [id]: responseTexts[id] });
       setShowResponseForm(null);
+      setEditingResponse(null);
       setResponseTexts({ ...responseTexts, [id]: "" });
     }
+  };
+
+  const editResponse = (id) => {
+    setEditingResponse(id);
+    setShowResponseForm(id);
+    setResponseTexts({ ...responseTexts, [id]: responses[id] });
   };
 
   const ratings = [
@@ -51,7 +60,7 @@ export default function MyRatings() {
       <Dnavbar />
       
       {/* Main Content */}
-      <main className="pt-16 md:pt-20 pb-16 px-4 md:px-6">
+      <main className="pt-16 md:pt-20 pb-24 px-4 md:px-6"> {/* Increased bottom padding to prevent overlap */}
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-semibold text-[#004274]">
@@ -138,18 +147,20 @@ export default function MyRatings() {
                 {rating.comment}
               </p>
               
-              {!rating.response ? (
+              {!rating.response || editingResponse === rating.id ? (
                 <>
-                  <button
-                    className="flex items-center gap-2 text-[#004274] hover:text-[#00315a] text-sm"
-                    onClick={() => toggleResponse(rating.id)}
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    <span>Respond</span>
-                  </button>
+                  {(!rating.response || editingResponse === rating.id) && (
+                    <button
+                      className="flex items-center gap-2 text-[#004274] hover:text-[#00315a] text-sm mb-2"
+                      onClick={() => toggleResponse(rating.id)}
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      <span>{editingResponse === rating.id ? "Editing Response" : "Respond"}</span>
+                    </button>
+                  )}
 
                   {showResponseForm === rating.id && (
-                    <div className="mt-4">
+                    <div className="mt-2">
                       <textarea
                         className="w-full p-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#004274]"
                         placeholder="Write your response..."
@@ -160,7 +171,10 @@ export default function MyRatings() {
                       <div className="flex gap-3 mt-3">
                         <button
                           className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 text-sm hover:bg-gray-100"
-                          onClick={() => toggleResponse(rating.id)}
+                          onClick={() => {
+                            toggleResponse(rating.id);
+                            setEditingResponse(null);
+                          }}
                         >
                           Cancel
                         </button>
@@ -168,7 +182,7 @@ export default function MyRatings() {
                           className="px-4 py-2 bg-[#004274] text-white rounded-md text-sm hover:bg-[#00315a]"
                           onClick={() => submitResponse(rating.id)}
                         >
-                          Submit Response
+                          {editingResponse === rating.id ? "Update Response" : "Submit Response"}
                         </button>
                       </div>
                     </div>
@@ -177,9 +191,17 @@ export default function MyRatings() {
               ) : (
                 <div className="mt-4 pt-4 border-t border-gray-200 text-left">
                   <div className="flex justify-between items-center mb-2">
-                    <h4 className="text-sm font-medium text-[#004274]">
-                      Your Response
-                    </h4>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-sm font-medium text-[#004274]">
+                        Your Response
+                      </h4>
+                      <button 
+                        onClick={() => editResponse(rating.id)}
+                        className="text-[#004274] hover:text-[#00315a]"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                    </div>
                     <p className="text-xs text-gray-500">
                       Just now
                     </p>
@@ -194,7 +216,7 @@ export default function MyRatings() {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center items-center gap-2 mt-8">
+        <div className="flex justify-center items-center gap-2 mt-8 mb-8">
           <button className="p-2 text-[#004274] hover:bg-gray-100 rounded-md">
             <ChevronLeft className="w-5 h-5" />
           </button>

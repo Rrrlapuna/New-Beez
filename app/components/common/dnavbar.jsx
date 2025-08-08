@@ -102,13 +102,15 @@ export default function Dnavbar() {
                 <div className="px-4 py-2 border-b border-gray-100">
                   <h3 className="text-sm font-medium text-gray-900">Notifications</h3>
                 </div>
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className="beez-notification-item px-4 py-3 hover:bg-gray-50 cursor-pointer"
-                  >
-                    <p className="text-sm text-gray-800">{notification.text}</p>
-                    <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                {notifications.map((notification, index) => (
+                  <div key={notification.id}>
+                    <div className="beez-notification-item px-4 py-3 hover:bg-gray-50 cursor-pointer">
+                      <p className="text-sm text-gray-800">{notification.text}</p>
+                      <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                    </div>
+                    {index < notifications.length - 1 && (
+                      <div className="border-t border-gray-100 mx-4"></div>
+                    )}
                   </div>
                 ))}
                 <div className="px-4 py-2 border-t border-gray-100 text-center">
@@ -195,13 +197,15 @@ export default function Dnavbar() {
                 <div className="px-4 py-2 border-b border-gray-100">
                   <h3 className="text-sm font-medium text-gray-900">Notifications</h3>
                 </div>
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className="beez-notification-item px-4 py-3 hover:bg-gray-50 cursor-pointer"
-                  >
-                    <p className="text-sm text-gray-800">{notification.text}</p>
-                    <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                {notifications.map((notification, index) => (
+                  <div key={notification.id}>
+                    <div className="beez-notification-item px-4 py-3 hover:bg-gray-50 cursor-pointer">
+                      <p className="text-sm text-gray-800">{notification.text}</p>
+                      <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                    </div>
+                    {index < notifications.length - 1 && (
+                      <div className="border-t border-gray-100 mx-4"></div>
+                    )}
                   </div>
                 ))}
                 <div className="px-4 py-2 border-t border-gray-100 text-center">

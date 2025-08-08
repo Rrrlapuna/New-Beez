@@ -53,17 +53,17 @@ export default function InquiriesPage() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex border-b border-gray-200 mb-6">
+        {/* Tabs - Updated to rounded button style */}
+        <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-full mb-6 w-fit">
           <button
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeTab === "leads" ? "text-[#004274] border-b-2 border-[#004274]" : "text-gray-500"}`}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-colors ${activeTab === "leads" ? "bg-[#004274] text-white" : "text-gray-500 hover:bg-gray-200"}`}
             onClick={() => toggleTab("leads")}
           >
             <Users className="w-4 h-4" />
             <span>Leads (1)</span>
           </button>
           <button
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeTab === "inquiries" ? "text-[#004274] border-b-2 border-[#004274]" : "text-gray-500"}`}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-colors ${activeTab === "inquiries" ? "bg-[#004274] text-white" : "text-gray-500 hover:bg-gray-200"}`}
             onClick={() => toggleTab("inquiries")}
           >
             <Inbox className="w-4 h-4" />
